@@ -1,0 +1,92 @@
+<!doctype html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <title>Hello World</title>
+</head>
+<body>
+  <script src="../pixi/pixi.min.js"></script>
+  <script type="text/javascript">
+    let type = "WebGL";
+    if (!PIXI.utils.isWebGLSupported()) {
+      type = "canvas";
+    }
+
+    const Application = PIXI.Application,
+        loader = PIXI.Loader.shared,
+        resources = PIXI.Loader.shared.resources,
+        Sprite = PIXI.Sprite;
+
+    const app = new PIXI.Application({
+        width: 640,         
+        height: 480,        
+    });
+
+    /*
+        To add images, we need to use the stage. The Application object exposes the stage: app.stage
+        It's a Container object. It's the root container for all the visible stuff
+        The type of stuff we can display in the stage are Sprites. They are images that can be control
+        with code (its position, size, etc) to make them interactive
+        As Pixi uses WebGL, the images needs to be in a format that the GPU can process. These images are
+        called textures. The images need to be converted to textures before displaying them on the stage
+        as Sprites
+    */
+
+    /*
+        Pixi uses a texture cache to store and reference all the textures. To load images and convert them
+        into textures, we can use the Loader object.
+    */
+    PIXI.Loader.shared
+      .add('../images/cat.png')
+      .load(setup);
+
+    function setup() {
+        // use the texture object in the Loader's resources
+        const sprite = new PIXI.Sprite(
+            PIXI.Loader.shared.resources['../images/cat.png'].texture
+        );
+
+        // Sprites need to be added to the stage to be displayed
+        app.stage.addChild(sprite);
+
+        // app.stage.removeChild(sprite);
+        // sprite.visible = false;
+    }
+
+    /////////////// Adding a name to the texture ///////////////
+    ////////////////////////////////////////////////////////////
+    // PIXI.Loader.shared
+    //   .add('catImage','../images/cat.png')
+    //   .load(setup);
+
+    // function setup() {
+    //     const sprite = new PIXI.Sprite(
+    //         PIXI.Loader.shared.resources['catImage'].texture
+    //     );
+
+    //     app.stage.addChild(sprite);
+    // }
+
+    ////////////// Load Progress ////////////
+    /////////////////////////////////////////
+    // PIXI.Loader.shared.onProgress.add(loadProgressHandler);
+    // PIXI.Loader.shared
+    //   .add([
+    //     '../images/cat.png',
+    //   ])
+    //   .load(setup);
+
+    // function loadProgressHandler(loader, resource) {
+    //   console.log("loading: " + resource.url); 
+    //   //Display the percentage of files currently loaded
+    //   console.log("progress: " + loader.progress + "%"); 
+    // }
+
+    // function setup() {
+    //   console.log("All files loaded");
+    // }
+
+    document.body.appendChild(app.view);
+  </script>
+</body>
+</html>

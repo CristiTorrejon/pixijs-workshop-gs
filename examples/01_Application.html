@@ -1,0 +1,61 @@
+<!doctype html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <title>Hello World</title>
+</head>
+<body>
+  <script src="../pixi/pixi.min.js"></script>
+  <script type="text/javascript">
+    let type = "WebGL";
+    if (!PIXI.utils.isWebGLSupported()) {
+      type = "canvas";
+    }
+
+    // Creates an HTML <canvas> to display images
+    // Renders the content
+    // Application config: https://pixijs.download/v5.3.10/docs/PIXI.Application.html
+    const app = new PIXI.Application({
+        width: 640,         // default: 800
+        height: 480,        // default: 600
+        antialias: true,    // default: false
+        transparent: false, // default: false
+        resolution: 1       // default: 1
+    });
+
+    /*  
+        The Application object's properties can be modified after its creation
+    */
+    // app.renderer.backgroundColor = 0x061639;
+    // app.renderer.resize(512, 512);
+
+    /*
+        To add images, we need to use the stage. The Application object exposes the stage: app.stage
+        It's a Container object. It's the root container for all the visible stuff
+        The type of stuff we can display in the stage are Sprites. They are images that can be control
+        with code (its position, size, etc) to make them interactive
+        As Pixi uses WebGL, the images needs to be in a format that the GPU can process. These images are
+        called textures. The images need to be converted to textures before displaying them on the stage
+        as Sprites
+    */
+
+    /*
+        Pixi uses a texture cache to store and reference all the textures. To load images and convert them
+        into textures, we can use the Loader object.
+    */
+    PIXI.Loader.shared
+      .add('images/cat.png')
+      .load(setup);
+
+    function setup() {
+
+        // use the texture object in the Loader's resources
+        const sprite = new PIXI.Sprite(
+            PIXI.Loader.shared.resources["images/anyImage.png"].texture
+        );
+    }
+
+    document.body.appendChild(app.view);
+  </script>
+</body>
+</html>
