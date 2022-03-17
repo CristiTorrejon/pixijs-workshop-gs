@@ -1,0 +1,91 @@
+<!doctype html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <title>Hello World</title>
+</head>
+<body>
+  <script src="../pixi/pixi.min.js"></script>
+  <script type="text/javascript">
+    let type = "WebGL";
+    if (!PIXI.utils.isWebGLSupported()) {
+      type = "canvas";
+    }
+    const app = new PIXI.Application({
+        width: 640, 
+        height: 480,
+    });
+
+    PIXI.Loader.shared
+      .add('../images/cat.png')
+      .load(setup);
+
+    let sprite;
+
+    ///////////////////////////////////////////////////////
+    ///////////////////// BASIC MOVEMENT /////////////////
+    ///////////////////////////////////////////////////////
+
+    function setup() {
+        sprite = new PIXI.Sprite(
+            PIXI.Loader.shared.resources['../images/cat.png'].texture
+        );
+        app.stage.addChild(sprite);
+
+        /* 
+            The ticker allows creating a game loop. The code inside will be updated
+            60 times per second.
+        */
+        app.ticker.add(delta => gameLoop(delta));
+    }
+
+    /* delta is the amount of lag/time between frames */
+    function gameLoop(delta) {
+        /* Eveytime the function is called, we update the sprite's position */
+        // sprite.x += 1;
+
+        /* 
+            If we use the delta to update the position, the animation will be independet
+            from the frame rate. It only matters if the animation is to heavy to keep up
+            with the frame rate
+        */
+        sprite.x += 1 * delta;
+    }
+
+    /////////////////////////////////////////////
+    /////////////////// VELOCITIES //////////////
+    /////////////////////////////////////////////
+    /*
+        To provide more flexibility, we cas use 2 variables to control de speed on both axis
+        vx changes the speed of the sprite on the x axis, similarly to vy for the y axis
+    */
+    // function setup() {
+    //     sprite = new PIXI.Sprite(
+    //         PIXI.Loader.shared.resources['../images/cat.png'].texture
+    //     );
+
+    //     /* The sprite won't move until we change the velocity given their usage on the gameLoop */
+    //     sprite.vx = 0;
+    //     sprite.vy = 0;
+    //     app.stage.addChild(sprite);
+    //     app.ticker.add(delta => gameLoop(delta));
+    // }
+
+    // function gameLoop() {
+        
+    //     /* Uncomment for the spirte to move */
+    //     // sprite.vx = 1;
+    //     // sprite.vy = 1;
+
+    //     /* If we assign a larger value, the sprite will move faster/slower and in other directions*/
+    //     // sprite.vx = 0.2;
+    //     // sprite.vy = 2;
+
+    //     sprite.x += sprite.vx;
+    //     sprite.y += sprite.vy;
+    // }
+
+    document.body.appendChild(app.view);
+  </script>
+</body>
+</html>

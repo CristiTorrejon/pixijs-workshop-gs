@@ -1,0 +1,139 @@
+<!doctype html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <title>Hello World</title>
+</head>
+<body>
+  <script src="../pixi/pixi.min.js"></script>
+  <script type="text/javascript">
+    let type = "WebGL";
+    if (!PIXI.utils.isWebGLSupported()) {
+      type = "canvas";
+    }
+    const app = new PIXI.Application({
+        width: 640, 
+        height: 480,
+    });
+
+    PIXI.Loader.shared
+      .add('../images/cat.png')
+      .load(setup);
+
+    /* 
+        To use the keyboard, we can subscribe to the DOM events keyDown (press) and keyUp (release).
+        Mind that this events will be triggered for any key.
+        With this utility function, we can generate a "subscription" for each key (https://github.com/kittykatattack/learningPixi#keyboard).
+        This is just an example, but it can be done in many other ways.
+    */
+
+    function keyboard(value) {
+        const key = {};
+
+        /* keep track of the key pressed */
+        key.value = value;
+
+        /* Exposed functions for the particular key */
+        key.isDown = false;
+        key.isUp = true;
+        key.press = undefined;
+        key.release = undefined;
+
+        /* on key pressed */
+        key.downHandler = (event) => {
+            /* If it's the key */
+            if (event.key === key.value) {
+                if (key.isUp && key.press) {
+                    /* execute the code on key pressed */
+                    key.press();
+                }
+                /* change the status of the key */
+                key.isDown = true;
+                key.isUp = false;
+                event.preventDefault();
+            }
+        };
+
+        /* on key released */
+        key.upHandler = (event) => {
+            if (event.key === key.value) {
+                if (key.isDown && key.release) {
+                    key.release();
+                }
+                key.isDown = false;
+                key.isUp = true;
+                event.preventDefault();
+            }
+        };
+
+        /* Mind the context. Example: https://www.pixijselementals.com/#context*/
+        const downListener = key.downHandler.bind(key);
+        const upListener = key.upHandler.bind(key);
+        
+        /* Add the listeners */
+        window.addEventListener('keydown', downListener, false);
+        window.addEventListener('keyup', upListener, false);
+        
+        return key;
+    }
+
+    let sprite;
+    let X_VELOCITY = 5;
+    let Y_VELOCITY = 5;
+    
+    function setup() {
+        sprite = new PIXI.Sprite(
+            PIXI.Loader.shared.resources['../images/cat.png'].texture
+        );
+        sprite.vx = 0;
+        sprite.vy = 0;
+
+        const left = keyboard("ArrowLeft");
+        const up = keyboard("ArrowUp");
+        const right = keyboard("ArrowRight");
+        const down = keyboard("ArrowDown");
+
+        /* Left key handlers */
+        left.press = () => {
+            /* Alter sprite's velocity on the x axis */
+            sprite.vx = -X_VELOCITY;
+        };
+        left.release = () => {
+            /* Set x velocity to 0 to stop the movement */
+            sprite.vx = 0;
+        }
+
+        up.press = () => {
+            sprite.vy = -Y_VELOCITY;
+        };
+        up.release = () => {
+            sprite.vy = 0;
+        };
+
+        right.press = () => {
+            sprite.vx = X_VELOCITY;
+        };
+        right.release = () => {
+            sprite.vx = 0;
+        }
+
+        down.press = () => {
+            sprite.vy = Y_VELOCITY;
+        };
+        down.release = () => {
+            sprite.vy = 0;
+        };
+
+        app.stage.addChild(sprite);
+        app.ticker.add(delta => gameLoop(delta));
+    }
+
+    function gameLoop(delta) {
+        sprite.x += sprite.vx;
+        sprite.y += sprite.vy;
+    }
+
+    document.body.appendChild(app.view);
+  </script>
+</body>
+</html>
