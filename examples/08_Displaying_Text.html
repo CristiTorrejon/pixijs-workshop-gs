@@ -25,6 +25,13 @@
       /* Pixi’s Text objects inherit from the Sprite class, so they contain all the
       same properties like x, y, width, height, alpha, and rotation. */
 
+      /* If you want to use a custom font file, use the CSS @font-face rule to link the font file to the HTML
+      page where your Pixi application is running.
+      @font-face {
+        font-family: "fontFamilyName";
+        src: url("fonts/fontFile.ttf");
+      } */
+
       //1. Simple text
       let message = new Text("Hello Pixi!");
       message.position.set(54, 96);
